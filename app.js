@@ -4,12 +4,14 @@ app.use(express.json());
 
 const {
   getTopics,
-  getArticles
+  getArticles,
+  getCommentsByArticleId
 } = require('./controllers/topics.js');
 
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 
 
 module.exports = app;

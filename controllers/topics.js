@@ -1,6 +1,7 @@
 const { 
     selectTopics,
-    selectArticles
+    selectArticles,
+    selectCommentsByArticleId
  } = require('../models/topics.js')
 
 
@@ -15,5 +16,13 @@ exports.getArticles = (req, res, next) => {
     selectArticles()
     .then((articles) => {
         res.send(articles.rows)
+    })
+}
+
+exports.getCommentsByArticleId = (req, res, next) => {
+    const { article_id } = req.params
+    selectCommentsByArticleId(article_id)
+    .then((comments) => {
+        res.send(comments.rows)
     })
 }

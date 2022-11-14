@@ -51,3 +51,24 @@ describe('/api/articles', () => {
         })
     });
 });
+
+describe('/api/articles/:article_id/comments', () => {
+    test('GET request responds with an array of comments for the given article_id', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(( { body }) => {
+            console.log(body)
+            expect(body.length).toBeGreaterThan(0)
+            body.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    body: expect.any(String)
+                })
+            })
+        })
+    });
+});
