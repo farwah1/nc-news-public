@@ -29,8 +29,6 @@ describe('/api/topics', () => {
     });
 });
 
-
-
 describe('/api/articles', () => {
     test('GET request responds with an articles array of article objects', () => {
         return request(app)
