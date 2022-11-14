@@ -37,7 +37,7 @@ describe('/api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(( { body }) => {
-            console.log(body)
+            expect(body.length).toBeGreaterThan(0)
             body.forEach(article => {
                 expect(article).toMatchObject({
                     author: expect.any(String),

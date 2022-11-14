@@ -17,7 +17,6 @@ exports.getTopics = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     selectArticles()
     .then((articles) => {
-        console.log(articles.rows)
         res.send(articles.rows)
     })
     .catch((error) => {
