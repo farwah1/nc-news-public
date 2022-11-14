@@ -16,7 +16,15 @@ exports.getArticleByArticleId = (req, res, next) => {
     const { article_id } = req.params
     selectArticleByArticleId(article_id)
     .then((article) => {
-        res.send(article.rows[0])
+        if (article.rows.length < 1) {
+            return Promise.reject({
+                status: 404,
+                msg: 'Article not found!'
+            })
+        } else {
+            article = article.rows[0]
+            res.send({ article })
+        }
     })
     .catch((error) => {
         next(error)

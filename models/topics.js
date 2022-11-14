@@ -9,6 +9,5 @@ exports.selectTopics = () => {
 exports.selectArticleByArticleId = (article_id) => {
     return db 
     .query(`SELECT articles.* FROM articles
-    JOIN users ON users.username = articles.author
      WHERE article_id = $1;`, [article_id])
 }
