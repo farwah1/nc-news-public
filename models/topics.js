@@ -1,5 +1,4 @@
 const db = require('../db/connection.js');
-const users = require('../db/data/test-data/users.js');
 
 exports.selectTopics = () => {
     return db 
