@@ -5,12 +5,18 @@ app.use(express.json());
 const {
   getTopics,
   getArticles,
+  getCommentsByArticleId,
   getArticleByArticleId,
+
 } = require('./controllers/topics.js');
 
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
+
+app.use((err, req, res, next) => {
+  if (err.status && err.msg) {
 app.get('/api/articles/:article_id', getArticleByArticleId);
 
 

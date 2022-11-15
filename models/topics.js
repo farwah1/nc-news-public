@@ -1,4 +1,5 @@
 const db = require('../db/connection.js');
+const { getArticlesByArticleID }  = require('../db/queryUtils.js');
 
 exports.selectTopics = () => {
     return db 
@@ -20,6 +21,19 @@ exports.selectArticles = () => {
             articles.created_at, articles.votes
             ORDER BY created_at DESC;`)
 }
+
+
+exports.selectCommentsByArticleId = (article_id) => {
+    return getArticlesByArticleID(article_id)
+    .then(() => {
+        return db 
+        .query(`SELECT * FROM comments WHERE article_id = $1
+        ORDER BY created_at DESC`, [article_id])
+        .then((comments) => {
+            return comments.rows  
+        });
+    });
+};
 
 exports.selectArticleByArticleId = (article_id) => {
     return db 
