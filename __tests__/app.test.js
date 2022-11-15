@@ -29,19 +29,19 @@ describe('/api/topics', () => {
 });
 
 describe('/api/articles/:article_id', () => {
-    test('GET request responds with an array of topic objects, each of which has slug and description properties', () => {
+    test('GET request responds with an object containing article object', () => {
         return request(app)
         .get('/api/articles/1')
         .expect(200)
         .then(( { body }) => {
             expect(body.article).toMatchObject({
-                author: expect.any(String),
-                title: expect.any(String),
+                author: 'butter_bridge',
+                title: 'Living in the shadow of a great man',
                 article_id: 1,
-                body: expect.any(String),
-                topic: expect.any(String),
+                body: 'I find this existence challenging',
+                topic:'mitch',
                 created_at: expect.any(String),
-                votes: expect.any(Number)
+                votes: 100
             })
         })
     });
