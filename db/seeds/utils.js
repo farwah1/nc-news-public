@@ -1,3 +1,5 @@
+const db = require('../connection.js')
+
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
@@ -20,3 +22,15 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+
+exports.getArticlesByArticleID = (article_id) => {
+  return db 
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then((articles) => {
+      if (articles.rows.length < 1) {
+        return Promise.reject({ status: 404, msg: 'article id does not exist'})
+      } else {
+        return articles.rows
+      }
+    })
+}
