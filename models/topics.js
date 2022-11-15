@@ -1,5 +1,5 @@
 const db = require('../db/connection.js');
-const { getArticlesByArticleID }  = require('../db/seeds/utils.js')
+const { getArticlesByArticleID }  = require('../db/queryUtils.js');
 
 exports.selectTopics = () => {
     return db 

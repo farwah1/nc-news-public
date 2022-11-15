@@ -73,7 +73,7 @@ describe('/api/articles/:article_id/comments', () => {
         })
     });
 
-    test('GET requests responds with 404 status and error message for an invalid id ', () => {
+    test('GET requests responds with 400 status and error message for an invalid id ', () => {
         return request(app)
         .get('/api/articles/woof/comments')
         .expect(400)
@@ -83,7 +83,7 @@ describe('/api/articles/:article_id/comments', () => {
     });
 
 
-    test('GET requests responds with 400 status and error message for a valid id that does not exist', () => {
+    test('GET requests responds with 404 status and error message for a valid id that does not exist', () => {
         return request(app)
         .get('/api/articles/1234/comments')
         .expect(404)
