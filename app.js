@@ -4,7 +4,8 @@ app.use(express.json());
 
 const {
   getTopics,
-  getArticleByArticleId
+  getArticleByArticleId,
+  getArticles
 } = require('./controllers/topics.js');
 
 
@@ -18,6 +19,8 @@ app.use((err, req, res, next) => {
     next(err)
   }
 });
+app.get('/api/articles', getArticles);
+
 
 app.use((err, req, res, next) => {
   if (err.code === '22P02') {
