@@ -7,8 +7,8 @@ const {
 
 exports.getTopics = (req, res, next) => {
     selectTopics()
-    .then((topics) => {
-        res.send(topics.rows)
+    .then((slugs) => {
+        res.send({ slugs })
     })
 }
 

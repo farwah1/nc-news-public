@@ -4,13 +4,15 @@ app.use(express.json());
 
 const {
   getTopics,
+  getArticles,
   getArticleByArticleId,
-  getArticles
 } = require('./controllers/topics.js');
 
 
 app.get('/api/topics', getTopics);
+app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleByArticleId);
+
 
 app.use((err, req, res, next) => {
   if (err.status) {
@@ -19,7 +21,6 @@ app.use((err, req, res, next) => {
     next(err)
   }
 });
-app.get('/api/articles', getArticles);
 
 
 app.use((err, req, res, next) => {
