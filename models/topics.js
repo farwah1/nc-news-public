@@ -1,5 +1,4 @@
 const db = require('../db/connection.js');
-const { getArticlesByArticleID }  = require('../db/queryUtils.js');
 
 exports.selectTopics = () => {
     return db 
@@ -23,18 +22,6 @@ exports.selectArticles = () => {
 }
 
 
-exports.selectCommentsByArticleId = (article_id) => {
-    return getArticlesByArticleID(article_id)
-    .then(() => {
-        return db 
-        .query(`SELECT * FROM comments WHERE article_id = $1
-        ORDER BY created_at DESC`, [article_id])
-        .then((comments) => {
-            return comments.rows  
-        });
-    });
-};
-
 exports.selectArticleByArticleId = (article_id) => {
     return db 
     .query(`SELECT articles.* FROM articles
@@ -48,6 +35,23 @@ exports.selectArticleByArticleId = (article_id) => {
         } else {
             return article.rows[0]
         }
-    })
-}
+    });
+};
+
+exports.selectCommentsByArticleId = (article_id) => {
+    return db 
+    .query(`SELECT * FROM comments WHERE article_id = $1
+    ORDER BY created_at DESC`, [article_id])
+    .then((comments) => {
+        if (comments.rows.length < 1) {
+            return Promise.reject({
+                status: 404,
+                msg: 'article id does not exist'
+            })
+        } else {
+            return comments.rows
+        }
+    });
+};
+
 
