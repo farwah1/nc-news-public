@@ -54,4 +54,20 @@ exports.selectCommentsByArticleId = (article_id) => {
     });
 };
 
+exports.addComment = (article_id, username, body) => {
+    if (!username || !body || (typeof username != 'string') || (typeof body != 'string')) {
+        return Promise.reject({ status: 404, msg: 'invalid object' })
+    } else {
+        db.query(`INSERT INTO users (username, name) VALUES ($1, $2)`, [username, username])
+        return db
+        .query(`INSERT INTO comments
+        (article_id, author, body)
+        VALUES
+        ($1, $2, $3) RETURNING*;`, [article_id, username, body])
+        .then((addedComment) => {
+            return addedComment.rows[0]
+        });
+    };
+};
+
 

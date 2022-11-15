@@ -2,7 +2,8 @@ const {
     selectTopics,
     selectArticles,
     selectArticleByArticleId,
-    selectCommentsByArticleId
+    selectCommentsByArticleId,
+    addComment
  } = require('../models/topics.js')
 
 
@@ -43,4 +44,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
         next(err);
     });
 };
+
+exports.postComment = (req, res, next) => {
+    const { article_id } = req.params;
+    const { username, body } = req.body;
+    addComment(article_id, username, body)
+    .then((addedComment) => {
+        res.status(201).send({addedComment})
+    })
+    .catch((error) => {
+        next(error)
+    })
+}
 

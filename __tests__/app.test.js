@@ -135,3 +135,50 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 
+describe('/api/articles/:article_id/comments', () => {
+    test('POST request reponds with 201 and the added comment', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 'This is awesome!!!'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.addedComment).toMatchObject({
+                comment_id: expect.any(Number),
+                author: 'thebear22',
+                body: 'This is awesome!!!',
+                article_id: 1
+            })
+        })
+    });
+
+    test('POST requests body must contain object with username AND body properties', () => {
+        const testComment =   {
+            username: 'thebear22'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid object')
+        });
+    });
+
+    test('POST request body object properties should be the correct data type', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 12345
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid object')
+        });
+    });
+});

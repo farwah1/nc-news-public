@@ -6,8 +6,8 @@ const {
   getTopics,
   getArticles,
   getArticleByArticleId,
-  getCommentsByArticleId
-
+  getCommentsByArticleId,
+  postComment
 } = require('./controllers/topics.js');
 
 
@@ -15,6 +15,7 @@ app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleByArticleId);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
+app.post('/api/articles/:article_id/comments', postComment)
 
 
 app.use((err, req, res, next) => {
