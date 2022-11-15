@@ -2,13 +2,14 @@ const {
     selectTopics,
     selectArticles,
     selectCommentsByArticleId
+    selectArticleByArticleId
  } = require('../models/topics.js')
 
 
 exports.getTopics = (req, res, next) => {
     selectTopics()
-    .then((topics) => {
-        res.send(topics.rows)
+    .then((slugs) => {
+        res.send({ slugs })
     })
 }
 
@@ -18,6 +19,7 @@ exports.getArticles = (req, res, next) => {
         res.send(articles.rows)
     })
 }
+
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params
@@ -29,3 +31,14 @@ exports.getCommentsByArticleId = (req, res, next) => {
         next(err)
     })
 }
+exports.getArticleByArticleId = (req, res, next) => {
+    const { article_id } = req.params
+    selectArticleByArticleId(article_id)
+    .then((article) => {
+        res.send({ article })
+    })
+    .catch((error) => {
+        next(error)
+    })
+}
+
