@@ -87,7 +87,7 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/meow')
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         }) 
     });
 });
@@ -114,12 +114,12 @@ describe('/api/articles/:article_id/comments', () => {
         })
     });
 
-    test('GET requests responds with 400 status and error message for an invalid id ', () => {
+    test('GET requests responds with 400 status and error message for an invalid input ', () => {
         return request(app)
         .get('/api/articles/woof/comments')
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         })
     });
 
@@ -138,7 +138,7 @@ describe('/api/articles/:article_id/comments', () => {
 describe('/api/articles/:article_id/comments', () => {
     test('POST request reponds with 201 and the added comment', () => {
         const testComment =   {
-            username: 'thebear22',
+            username: 'rogersop',
             body: 'This is awesome!!!'
           }
         return request(app)
@@ -148,12 +148,27 @@ describe('/api/articles/:article_id/comments', () => {
         .then(({ body }) => {
             expect(body.comment).toMatchObject({
                 comment_id: expect.any(Number),
-                author: 'thebear22',
+                author: 'rogersop',
                 body: 'This is awesome!!!',
                 article_id: 1
             })
         })
     });
+
+    test('POST request reponds with 400 if the user does not exist', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 'Lovely'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('user does not exist')
+        })
+    });
+
 
     test('POST requests body must contain object with username AND body properties', () => {
         const testComment =   {
@@ -169,7 +184,7 @@ describe('/api/articles/:article_id/comments', () => {
     });
 
 
-    test('POST requests responds with 400 status and error message for an invalid id ', () => {
+    test('POST requests responds with 400 status and error message for an invalid input ', () => {
         const testComment =   {
             username: 'thebear22',
             body: 'This is awesome!!!'
@@ -179,7 +194,7 @@ describe('/api/articles/:article_id/comments', () => {
         .send(testComment)
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         })
     });
 
@@ -205,7 +220,7 @@ describe('/api/articles/:article_id', () => {
         return request(app)
         .patch('/api/articles/1')
         .send(testUpdate)
-        .expect(201)
+        .expect(202)
         .then(( { body }) => {
             expect(body.article).toMatchObject({
                 title: "Living in the shadow of a great man",
@@ -225,7 +240,7 @@ describe('/api/articles/:article_id', () => {
         .send(testUpdate)
         .expect(400)
         .then(({ body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         });
     });
 
@@ -238,5 +253,47 @@ describe('/api/articles/:article_id', () => {
         .then(({ body }) => {
             expect(body.msg).toBe('article id does not exist')
         });
+    });
+
+    test('PATCH request responds with 400 if body object does not contain votes property', () => {
+        const testUpdate = {}
+        return request(app)
+        .patch('/api/articles/2')
+        .send(testUpdate)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('object invalid format')
+        });
+    });
+
+    test('PATCH request responds with 400 if inc_vote is not a number', () => {
+        const testUpdate = { inc_votes: 'meow'}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(testUpdate)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid input')
+        });
+    });
+});
+
+
+
+describe('/api/users', () => {
+    test('GET request responds with 200 and users object', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.users.length).toBeGreaterThan(0)
+            body.users.forEach(user => {
+                expect(user).toMatchObject({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url:expect.any(String)
+                })
+            })
+        })
     });
 });

@@ -5,13 +5,30 @@ exports.checkArticleExists = (article_id) => {
     .query(`SELECT * FROM articles
      WHERE article_id = $1;`, [article_id])
     .then((article) => {
-        if (article.rows.length < 1) {
+        return article.rows[0]
+    })
+    .catch((err) => {
+        if (err.code === '22P02') {
+            return Promise.reject({
+                status: 400,
+                msg: 'invalid input'
+            });
+        };
+    });
+};
+
+exports.checkUserExists = (username) => {
+    return db 
+    .query(`SELECT * FROM users
+     WHERE username = $1;`, [username])
+    .then((user) => {
+        if (user.rows.length < 1) {
             return Promise.reject({
                 status: 404,
-                msg: 'article id does not exist'
+                msg: 'user does not exist'
             })
         } else {
-            return article.rows[0]
+            return user.rows[0]
         }
     });
 }
