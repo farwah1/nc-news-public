@@ -48,7 +48,7 @@ describe('checkUserExists', () => {
         });
     });
 
-    test('if username does not exist responds with 400', async () => {
+    test('if username does not exist responds with 404', async () => {
         await checkArticleExists(1)
         .then(() => {  
         })

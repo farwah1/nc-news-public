@@ -31,7 +31,7 @@ exports.checkUserExists = (username) => {
     .then((user) => {
         if (user.rows.length < 1) {
             return Promise.reject({
-                status: 400,
+                status: 404,
                 msg: 'user does not exist'
             })
         } else {
