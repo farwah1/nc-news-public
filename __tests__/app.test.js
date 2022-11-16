@@ -138,7 +138,7 @@ describe('/api/articles/:article_id/comments', () => {
 describe('/api/articles/:article_id/comments', () => {
     test('POST request reponds with 201 and the added comment', () => {
         const testComment =   {
-            username: 'thebear22',
+            username: 'rogersop',
             body: 'This is awesome!!!'
           }
         return request(app)
@@ -148,12 +148,27 @@ describe('/api/articles/:article_id/comments', () => {
         .then(({ body }) => {
             expect(body.comment).toMatchObject({
                 comment_id: expect.any(Number),
-                author: 'thebear22',
+                author: 'rogersop',
                 body: 'This is awesome!!!',
                 article_id: 1
             })
         })
     });
+
+    test('POST request reponds with 400 if the user does not exist', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 'Lovely'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('user does not exist')
+        })
+    });
+
 
     test('POST requests body must contain object with username AND body properties', () => {
         const testComment =   {

@@ -13,5 +13,29 @@ exports.checkArticleExists = (article_id) => {
         } else {
             return article.rows[0]
         }
+    })
+    .catch((err) => {
+        if (err.code === '22P02') {
+            return Promise.reject({
+                status: 400,
+                msg: 'invalid id'
+            });
+        };
+    });
+};
+
+exports.checkUserExists = (username) => {
+    return db 
+    .query(`SELECT * FROM users
+     WHERE username = $1;`, [username])
+    .then((user) => {
+        if (user.rows.length < 1) {
+            return Promise.reject({
+                status: 400,
+                msg: 'user does not exist'
+            })
+        } else {
+            return user.rows[0]
+        }
     });
 }
