@@ -80,4 +80,13 @@ exports.addComment = (article_id, username, body) => {
     };
 };
 
+exports.selectUsers = () => {
+    return db 
+    .query(`SELECT * FROM users;`)
+    .then((users) => {
+        return users.rows
+    })
+}
+
+
 
