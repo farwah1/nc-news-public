@@ -78,7 +78,7 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/120')
         .expect(404)
         .then(( { body }) => {
-            expect(body.msg).toBe('Article not found!')
+            expect(body.msg).toBe('article id does not exist')
         });
     });
 
@@ -87,7 +87,7 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/meow')
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('Invalid id')
+            expect(body.msg).toBe('invalid id')
         }) 
     });
 });
@@ -119,7 +119,7 @@ describe('/api/articles/:article_id/comments', () => {
         .get('/api/articles/woof/comments')
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('Invalid id')
+            expect(body.msg).toBe('invalid id')
         })
     });
 
@@ -135,3 +135,81 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 
+describe('/api/articles/:article_id/comments', () => {
+    test('POST request reponds with 201 and the added comment', () => {
+        const testComment =   {
+            username: 'rogersop',
+            body: 'This is awesome!!!'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.comment).toMatchObject({
+                comment_id: expect.any(Number),
+                author: 'rogersop',
+                body: 'This is awesome!!!',
+                article_id: 1
+            })
+        })
+    });
+
+    test('POST request reponds with 400 if the user does not exist', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 'Lovely'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('user does not exist')
+        })
+    });
+
+
+    test('POST requests body must contain object with username AND body properties', () => {
+        const testComment =   {
+            username: 'thebear22'
+          }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(testComment)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('missing object properties')
+        });
+    });
+
+
+    test('POST requests responds with 400 status and error message for an invalid id ', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 'This is awesome!!!'
+          }
+        return request(app)
+        .post('/api/articles/woof/comments')
+        .send(testComment)
+        .expect(400)
+        .then(( { body }) => {
+            expect(body.msg).toBe('invalid id')
+        })
+    });
+
+
+    test('POST requests responds with 404 status and error message for a valid id that does not exist', () => {
+        const testComment =   {
+            username: 'thebear22',
+            body: 'This is awesome!!!'
+          }
+        return request(app)
+        .post('/api/articles/1234/comments')
+        .send(testComment)
+        .expect(404)
+        .then(( { body }) => {
+            expect(body.msg).toBe('article id does not exist')
+        })
+    });
+});

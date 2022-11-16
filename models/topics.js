@@ -1,4 +1,6 @@
 const db = require('../db/connection.js');
+const { checkArticleExists,
+    checkUserExists } = require('../db/queryUtils.js')
 
 exports.selectTopics = () => {
     return db 
@@ -30,7 +32,7 @@ exports.selectArticleByArticleId = (article_id) => {
         if (article.rows.length < 1) {
             return Promise.reject({
                 status: 404,
-                msg: 'Article not found!'
+                msg: 'article id does not exist'
             })
         } else {
             return article.rows[0]
@@ -52,6 +54,30 @@ exports.selectCommentsByArticleId = (article_id) => {
             return comments.rows
         }
     });
+};
+
+exports.addComment = (article_id, username, body) => {
+    if (!username || !body) {
+        return Promise.reject({ status: 400, msg: 'missing object properties' })
+    } else {
+        return checkArticleExists(article_id)
+        .then((res) => {
+            if (!res) {
+                return Promise.reject({ status: 404, msg: 'article id does not exist' })
+            }
+            return checkUserExists(username)
+            .then(() => {
+                return db
+                .query(`INSERT INTO comments
+                (article_id, author, body)
+                VALUES
+                ($1, $2, $3) RETURNING*;`, [article_id, username, body])
+                .then((addedComment) => {
+                    return addedComment.rows[0]
+                });
+            })
+        })
+    };
 };
 
 

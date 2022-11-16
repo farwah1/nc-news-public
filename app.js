@@ -6,8 +6,8 @@ const {
   getTopics,
   getArticles,
   getArticleByArticleId,
-  getCommentsByArticleId
-
+  getCommentsByArticleId,
+  postComment
 } = require('./controllers/topics.js');
 
 
@@ -15,6 +15,7 @@ app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleByArticleId);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
+app.post('/api/articles/:article_id/comments', postComment)
 
 
 app.use((err, req, res, next) => {
@@ -28,7 +29,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   if (err.code === '22P02') {
-    res.status(400).send({ msg: 'Invalid id' })
+    res.status(400).send({ msg: 'invalid id' })
   } else {
     next(err)
   }
