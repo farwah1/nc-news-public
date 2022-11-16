@@ -198,3 +198,45 @@ describe('/api/articles/:article_id/comments', () => {
         })
     });
 });
+
+describe('/api/articles/:article_id', () => {
+    test('PATCH request responds with 201 with updated article votes', () => {
+        const testUpdate = { inc_votes: 1 }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(testUpdate)
+        .expect(201)
+        .then(( { body }) => {
+            expect(body.article).toMatchObject({
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: expect.any(String),
+                votes: 101,
+              })
+        })
+    });
+
+    test('PATCH request responds with 400 if article id is invalid', () => {
+        const testUpdate = { inc_votes: 1 }
+        return request(app)
+        .patch('/api/articles/rawr')
+        .send(testUpdate)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid id')
+        });
+    });
+
+    test('PATCH request responds with 404 if article id valid but does not exist', () => {
+        const testUpdate = { inc_votes: 1 }
+        return request(app)
+        .patch('/api/articles/12345')
+        .send(testUpdate)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('article id does not exist')
+        });
+    });
+});
