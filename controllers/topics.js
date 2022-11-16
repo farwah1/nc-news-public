@@ -3,7 +3,8 @@ const {
     selectArticles,
     selectArticleByArticleId,
     selectCommentsByArticleId,
-    addComment
+    addComment,
+    updateArticle
  } = require('../models/topics.js')
 
 
@@ -55,5 +56,17 @@ exports.postComment = (req, res, next) => {
     .catch((error) => {
         next(error)
     })
-}
+};
+
+exports.patchArticle = (req, res, next) => {
+    const { article_id } = req.params;
+    const { inc_votes  } = req.body;
+    updateArticle(article_id, inc_votes)
+    .then((article) => {
+        res.status(201).send({ article })
+    })
+    .catch((error) => {
+        next(error)
+    })
+};
 

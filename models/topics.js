@@ -82,4 +82,16 @@ exports.addComment = (article_id, username, body) => {
     };
 };
 
+exports.updateArticle = (article_id, inc_votes) => {
+    return checkArticleExists(article_id)
+    .then(() => {
+    return db 
+    .query(`UPDATE articles
+    SET votes = votes + $2 WHERE article_id = $1 RETURNING*;`, [article_id, inc_votes])
+    })
+    .then((updatedArticle) => {
+        return updatedArticle.rows[0]
+    });
+};
+
 
