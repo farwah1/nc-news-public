@@ -9,7 +9,8 @@ const {
   getCommentsByArticleId,
   postComment,
   patchArticle,
-  getUsers
+  getUsers,
+  getApi
 } = require('./controllers/topics.js');
 
 
@@ -20,6 +21,7 @@ app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 app.post('/api/articles/:article_id/comments', postComment)
 app.patch('/api/articles/:article_id', patchArticle)
 app.get('/api/users', getUsers)
+app.get('/api', getApi)
 
 
 app.use((err, req, res, next) => {

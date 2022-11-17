@@ -5,7 +5,8 @@ const {
     selectCommentsByArticleId,
     addComment,
     updateArticle,
-    selectUsers
+    selectUsers,
+    selectApi
  } = require('../models/topics.js')
 
 
@@ -83,5 +84,13 @@ exports.getUsers = (req, res, next) => {
     .catch((error) => {
         next(error)
     })
+}
+
+exports.getApi = (req, res, next) => {
+    selectApi()
+    .then((endpoints) => {
+        res.send({ endpoints })
+    })
+    
 }
 

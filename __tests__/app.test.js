@@ -393,8 +393,19 @@ describe('/api/articles queries', () => {
         return request(app)
         .get('/api/articles?order=meow')
         .expect(400)
-        .then(( { body }) => {
+        .then(({ body }) => {
             expect(body.msg).toBe('invalid order query')
+        }) 
+    });
+});
+
+describe('/api', () => {
+    test('GET request responds with 200 and JSON describing all the available endpoints on API', () => {
+        return request(app)
+        .get('/api/')
+        .expect(200)
+        .then(({ body }) => {
+            // expect(body.endpoints).toEqual(``)
         }) 
     });
 });

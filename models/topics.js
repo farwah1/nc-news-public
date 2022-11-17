@@ -1,5 +1,6 @@
 const db = require('../db/connection.js');
 const { checkUserExists } = require('../db/queryUtils.js')
+const { readFile } = require('fs/promises')
 
 exports.selectTopics = () => {
     return db 
@@ -128,5 +129,10 @@ exports.selectUsers = () => {
     })
 }
 
-
-
+exports.selectApi  = async() => {
+    return await readFile('./endpoints.json', 'utf8')
+    .then((endpoints) => {
+        const parsedEndpoints = JSON.parse(endpoints)
+        return JSON.stringify(parsedEndpoints)
+    })
+}
