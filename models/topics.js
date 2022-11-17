@@ -25,8 +25,11 @@ exports.selectArticles = () => {
 
 exports.selectArticleByArticleId = (article_id) => {
     return db 
-    .query(`SELECT articles.* FROM articles
-     WHERE article_id = $1;`, [article_id])
+    .query(`SELECT articles.*, count(comments.article_id)::INT AS comment_count 
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;`, [article_id])
     .then((article) => {
         if (article.rows.length < 1) {
             return Promise.reject({
