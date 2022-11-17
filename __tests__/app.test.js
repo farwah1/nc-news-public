@@ -87,7 +87,7 @@ describe('/api/articles/:article_id', () => {
         .get('/api/articles/meow')
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         }) 
     });
 });
@@ -114,12 +114,12 @@ describe('/api/articles/:article_id/comments', () => {
         })
     });
 
-    test('GET requests responds with 400 status and error message for an invalid id ', () => {
+    test('GET requests responds with 400 status and error message for an invalid input ', () => {
         return request(app)
         .get('/api/articles/woof/comments')
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         })
     });
 
@@ -172,7 +172,7 @@ describe('/api/articles/:article_id/comments', () => {
 
     test('POST requests body must contain object with username AND body properties', () => {
         const testComment =   {
-            username: 'thebear22'
+            username: 'rogersop'
           }
         return request(app)
         .post('/api/articles/1/comments')
@@ -184,9 +184,9 @@ describe('/api/articles/:article_id/comments', () => {
     });
 
 
-    test('POST requests responds with 400 status and error message for an invalid id ', () => {
+    test('POST requests responds with 400 status and error message for an invalid input ', () => {
         const testComment =   {
-            username: 'thebear22',
+            username: 'rogersop',
             body: 'This is awesome!!!'
           }
         return request(app)
@@ -194,14 +194,14 @@ describe('/api/articles/:article_id/comments', () => {
         .send(testComment)
         .expect(400)
         .then(( { body }) => {
-            expect(body.msg).toBe('invalid id')
+            expect(body.msg).toBe('invalid input')
         })
     });
 
 
     test('POST requests responds with 404 status and error message for a valid id that does not exist', () => {
         const testComment =   {
-            username: 'thebear22',
+            username: 'rogersop',
             body: 'This is awesome!!!'
           }
         return request(app)
@@ -213,6 +213,72 @@ describe('/api/articles/:article_id/comments', () => {
         })
     });
 });
+
+describe('/api/articles/:article_id', () => {
+    test('PATCH request responds with 202 with updated article votes', () => {
+        const testUpdate = { inc_votes: 1 }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(testUpdate)
+        .expect(202)
+        .then(( { body }) => {
+            expect(body.article).toMatchObject({
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: expect.any(String),
+                votes: 101,
+              })
+        })
+    });
+
+    test('PATCH request responds with 400 if article id is invalid', () => {
+        const testUpdate = { inc_votes: 1 }
+        return request(app)
+        .patch('/api/articles/rawr')
+        .send(testUpdate)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid input')
+        });
+    });
+
+    test('PATCH request responds with 404 if article id valid but does not exist', () => {
+        const testUpdate = { inc_votes: 1 }
+        return request(app)
+        .patch('/api/articles/12345')
+        .send(testUpdate)
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('article id does not exist')
+        });
+    });
+
+    test('PATCH request responds with 400 if body object does not contain votes property', () => {
+        const testUpdate = {}
+        return request(app)
+        .patch('/api/articles/2')
+        .send(testUpdate)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('object invalid format')
+        });
+    });
+
+    test('PATCH request responds with 400 if inc_vote is not a number', () => {
+        const testUpdate = { inc_votes: 'meow'}
+        return request(app)
+        .patch('/api/articles/3')
+        .send(testUpdate)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid input')
+        });
+    });
+});
+
+
 
 describe('/api/users', () => {
     test('GET request responds with 200 and users object', () => {

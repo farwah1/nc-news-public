@@ -4,6 +4,7 @@ const {
     selectArticleByArticleId,
     selectCommentsByArticleId,
     addComment,
+    updateArticle,
     selectUsers
  } = require('../models/topics.js')
 
@@ -56,7 +57,19 @@ exports.postComment = (req, res, next) => {
     .catch((error) => {
         next(error)
     })
-}
+};
+
+exports.patchArticle = (req, res, next) => {
+    const { article_id } = req.params;
+    const { inc_votes  } = req.body;
+    updateArticle(article_id, inc_votes)
+    .then((article) => {
+        res.status(202).send({ article })
+    })
+    .catch((error) => {
+        next(error)
+    })
+};
 
 exports.getUsers = (req, res, next) => {
     selectUsers()

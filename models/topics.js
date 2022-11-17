@@ -1,6 +1,5 @@
 const db = require('../db/connection.js');
-const { checkArticleExists,
-    checkUserExists } = require('../db/queryUtils.js')
+const { checkUserExists } = require('../db/queryUtils.js')
 
 exports.selectTopics = () => {
     return db 
@@ -60,11 +59,6 @@ exports.addComment = (article_id, username, body) => {
     if (!username || !body) {
         return Promise.reject({ status: 400, msg: 'missing object properties' })
     } else {
-        return checkArticleExists(article_id)
-        .then((res) => {
-            if (!res) {
-                return Promise.reject({ status: 404, msg: 'article id does not exist' })
-            }
             return checkUserExists(username)
             .then(() => {
                 return db
@@ -75,10 +69,27 @@ exports.addComment = (article_id, username, body) => {
                 .then((addedComment) => {
                     return addedComment.rows[0]
                 });
-            })
-        })
+            });
     };
 };
+
+exports.updateArticle = (article_id, inc_votes) => {
+    if (inc_votes === undefined) {
+        return Promise.reject({status: 400, msg: 'object invalid format'});
+    } else {
+        return db 
+        .query(`UPDATE articles
+        SET votes = votes + $2 WHERE article_id = $1 RETURNING*;`, [article_id, inc_votes])
+        .then((updatedArticle) => {
+            if (updatedArticle.rows.length < 1) {
+                return Promise.reject({status: 404, msg: 'article id does not exist'});
+            } else {
+                return updatedArticle.rows[0]
+            }
+        });
+    };
+};
+
 
 exports.selectUsers = () => {
     return db 
