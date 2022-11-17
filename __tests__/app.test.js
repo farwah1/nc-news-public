@@ -35,8 +35,8 @@ describe('/api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(( { body }) => {
-            expect(body.length).toBeGreaterThan(0)
-            body.forEach(article => {
+            expect(body.articles.length).toBeGreaterThan(0)
+            body.articles.forEach(article => {
                 expect(article).toMatchObject({
                     author: expect.any(String),
                     title: expect.any(String),
@@ -299,6 +299,7 @@ describe('/api/users', () => {
     });
 });
 
+
 describe('/api/comments/:comment_id', () => {
     test('GET request responds with 200 and the comment', () => {
         return request(app)
@@ -367,5 +368,103 @@ describe('/api/comments/:comment_id', () => {
         .then(({ body }) => {
             expect(body.msg).toBe('invalid input')
         })
+
+describe('/api/articles queries', () => {
+    test('GET request responds with 200 and all articles of one topic', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: 'cats',
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+        }) 
+    });
+
+    test('GET request responds with 200 and all articles ordered by asc or desc', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+            expect(body.articles).toBeSorted('created_at',{ascending: true})
+        }) 
+    });
+
+    test('GET request responds with 200 and all articles sorted by a specific column', () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+            expect(body.articles).toBeSortedBy('votes', {descending: true})
+        }) 
+    });
+
+    test('GET request responds with 200 and all articles sorted by a specific column and order', () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes&order=asc')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+            expect(body.articles).toBeSortedBy('votes', {ascending: true})
+        }) 
+    });
+
+    test('GET request responds with 400 if sort_by column is not valid', () => {
+        return request(app)
+        .get('/api/articles?sort_by=moo')
+        .expect(400)
+        .then(( { body }) => {
+            expect(body.msg).toBe('sort_by column not found')
+        }) 
+    });
+
+    test('GET request responds with 404 if topic does not exist', () => {
+        return request(app)
+        .get('/api/articles?topic=woof')
+        .expect(404)
+        .then(( { body }) => {
+            expect(body.msg).toBe('topic does not exist')
+        }) 
+    });
+
+    test('GET request responds with 400 if order is not valid', () => {
+        return request(app)
+        .get('/api/articles?order=meow')
+        .expect(400)
+        .then(( { body }) => {
+            expect(body.msg).toBe('invalid order query')
+        }) 
     });
 });
