@@ -21,7 +21,7 @@ exports.selectArticles = (topic, sort_by='created_at', order='desc') => {
     LEFT JOIN comments ON comments.article_id = articles.article_id`
 
     if (!validSortBys.includes(sort_by)) {
-       return Promise.reject({status: 404, msg: 'sort_by column not found'})
+       return Promise.reject({status: 400, msg: 'sort_by column not found'})
     }
 
     if (topic !== undefined) {
@@ -29,11 +29,21 @@ exports.selectArticles = (topic, sort_by='created_at', order='desc') => {
         queryStr += ` WHERE topic = $3`
     }
 
+    if (!['asc', 'desc'].includes(order.toLowerCase())) {
+        return Promise.reject({status: 400, msg: 'invalid order query'})
+    }
+
     queryStr += ` GROUP BY comments.article_id, articles.author, articles.title, articles.article_id, articles.topic,
     articles.created_at, articles.votes ORDER BY $1, $2;`
 
     return db 
     .query(queryStr, queryValues)
+    .then((articles) => {
+        if (articles.rows.length < 1) {
+            return Promise.reject({status: 400, msg: 'topic does not exist'})
+        }
+        return articles.rows
+    })
 }
 
 

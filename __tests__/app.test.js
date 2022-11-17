@@ -352,12 +352,30 @@ describe('/api/articles queries', () => {
         }) 
     });
 
-    test('GET request responds with 404 if sort_by column is not valid', () => {
+    test('GET request responds with 400 if sort_by column is not valid', () => {
         return request(app)
         .get('/api/articles?sort_by=moo')
-        .expect(404)
+        .expect(400)
         .then(( { body }) => {
             expect(body.msg).toBe('sort_by column not found')
+        }) 
+    });
+
+    test('GET request responds with 400 if topic is not valid', () => {
+        return request(app)
+        .get('/api/articles?topic=woof')
+        .expect(400)
+        .then(( { body }) => {
+            expect(body.msg).toBe('topic does not exist')
+        }) 
+    });
+
+    test('GET request responds with 400 if order is not valid', () => {
+        return request(app)
+        .get('/api/articles?order=meow')
+        .expect(400)
+        .then(( { body }) => {
+            expect(body.msg).toBe('invalid order query')
         }) 
     });
 });
