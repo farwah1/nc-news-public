@@ -298,3 +298,41 @@ describe('/api/users', () => {
         })
     });
 });
+
+describe('/api/comments/:comment_id', () => {
+    test('DELETE request responds with 204 and the deleted comment', () => {
+        return request(app)
+        .delete('/api/comments/2')
+        .expect(204)
+        .then(({ body }) => {
+            console.log(body, '<test')
+            expect(body).toMatchObject({})
+            //     {
+            //     comment_id : 1,
+            //     body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            //     votes: 16,
+            //     author: "butter_bridge",
+            //     article_id: 9,
+            //     created_at: expect.any(String),
+            //   })
+        })
+    });
+
+    test('DELETE request responds with 404 if comment id valid but does not exist', () => {
+        return request(app)
+        .delete('/api/comments/12345')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('comment does not exist')
+        })
+    });
+
+    test('DELETE request responds with 400 if invalid comment_id given', () => {
+        return request(app)
+        .delete('/api/comments/roar')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('invalid input')
+        })
+    });
+});
