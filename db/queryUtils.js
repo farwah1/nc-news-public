@@ -1,22 +1,5 @@
 const db = require('./connection.js')
 
-exports.checkArticleExists = (article_id) => {
-    return db 
-    .query(`SELECT * FROM articles
-     WHERE article_id = $1;`, [article_id])
-    .then((article) => {
-        return article.rows[0]
-    })
-    .catch((err) => {
-        if (err.code === '22P02') {
-            return Promise.reject({
-                status: 400,
-                msg: 'invalid input'
-            });
-        };
-    });
-};
-
 exports.checkUserExists = (username) => {
     return db 
     .query(`SELECT * FROM users

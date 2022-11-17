@@ -172,7 +172,7 @@ describe('/api/articles/:article_id/comments', () => {
 
     test('POST requests body must contain object with username AND body properties', () => {
         const testComment =   {
-            username: 'thebear22'
+            username: 'rogersop'
           }
         return request(app)
         .post('/api/articles/1/comments')
@@ -186,7 +186,7 @@ describe('/api/articles/:article_id/comments', () => {
 
     test('POST requests responds with 400 status and error message for an invalid input ', () => {
         const testComment =   {
-            username: 'thebear22',
+            username: 'rogersop',
             body: 'This is awesome!!!'
           }
         return request(app)
@@ -201,7 +201,7 @@ describe('/api/articles/:article_id/comments', () => {
 
     test('POST requests responds with 404 status and error message for a valid id that does not exist', () => {
         const testComment =   {
-            username: 'thebear22',
+            username: 'rogersop',
             body: 'This is awesome!!!'
           }
         return request(app)
@@ -215,7 +215,7 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 describe('/api/articles/:article_id', () => {
-    test('PATCH request responds with 201 with updated article votes', () => {
+    test('PATCH request responds with 202 with updated article votes', () => {
         const testUpdate = { inc_votes: 1 }
         return request(app)
         .patch('/api/articles/1')
