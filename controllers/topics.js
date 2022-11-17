@@ -6,7 +6,8 @@ const {
     addComment,
     updateArticle,
     selectUsers,
-    removeComment
+    removeComment,
+    selectCommentByCommentId
  } = require('../models/topics.js')
 
 
@@ -82,12 +83,22 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
+exports.getCommentByCommentId = (req, res, next) => {
+    const { comment_id } = req.params
+    selectCommentByCommentId(comment_id)
+    .then((comment) => {
+        res.send({ comment })
+    })
+    .catch((error) => {
+        next(error)
+    })
+}
+
 exports.deleteComment = (req, res, next) => {
     const { comment_id } = req.params
     removeComment(comment_id)
-    .then((comment) => {
-        console.log({ comment }, '<controller')
-        res.status(204).send('here')
+    .then(() => {
+        res.sendStatus(204)
     })
     .catch((error) => {
         next(error)
