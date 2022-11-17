@@ -367,8 +367,8 @@ describe('/api/comments/:comment_id', () => {
         .then(({ body }) => {
             expect(body.msg).toBe('invalid input')
         })
-
     })
+})
 
 describe('/api/articles queries', () => {
     test('GET request responds with 200 and all articles of one topic', () => {
@@ -469,4 +469,4 @@ describe('/api/articles queries', () => {
         }) 
     })
 })
-})
+
