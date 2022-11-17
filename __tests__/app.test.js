@@ -352,13 +352,12 @@ describe('/api/articles queries', () => {
         }) 
     });
 
-    // test('GET request responds with 400 for invalid query', () => {
-    //     return request(app)
-    //     .get('/api/articles?topicc=cats')
-    //     .expect(400)
-    //     .then(( { body }) => {
-    //         console.log(body)
-    //         expect(body.msg).toBe('invalid input')
-    //     }) 
-    // });
+    test('GET request responds with 404 if sort_by column is not valid', () => {
+        return request(app)
+        .get('/api/articles?sort_by=moo')
+        .expect(404)
+        .then(( { body }) => {
+            expect(body.msg).toBe('sort_by column not found')
+        }) 
+    });
 });

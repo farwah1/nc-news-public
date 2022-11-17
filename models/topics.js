@@ -10,7 +10,8 @@ exports.selectTopics = () => {
     })
 }
 
-exports.selectArticles = (topic, sort_by='created_at', order='DESC') => {
+exports.selectArticles = (topic, sort_by='created_at', order='desc') => {
+    const validSortBys = ['title', 'topic', 'author', 'created_at', 'votes']
     const queryValues = [sort_by, order]
     let queryStr = `SELECT articles.author, articles.title,
     articles.article_id, articles.topic,
@@ -18,6 +19,10 @@ exports.selectArticles = (topic, sort_by='created_at', order='DESC') => {
     COUNT(comments.article_id)::INT AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id`
+
+    if (!validSortBys.includes(sort_by)) {
+       return Promise.reject({status: 404, msg: 'sort_by column not found'})
+    }
 
     if (topic !== undefined) {
         queryValues.push(topic)
