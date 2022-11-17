@@ -12,7 +12,7 @@ exports.selectTopics = () => {
 
 exports.selectArticles = (topic, sort_by='created_at', order='desc') => {
     const validSortBys = ['title', 'topic', 'author', 'created_at', 'votes']
-    const queryValues = [sort_by, order]
+    const queryValues = []
     let queryStr = `SELECT articles.author, articles.title,
     articles.article_id, articles.topic,
     articles.created_at, articles.votes,
@@ -20,27 +20,30 @@ exports.selectArticles = (topic, sort_by='created_at', order='desc') => {
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id`
 
-    if (!validSortBys.includes(sort_by)) {
-       return Promise.reject({status: 400, msg: 'sort_by column not found'})
-    }
-
     if (topic !== undefined) {
         queryValues.push(topic)
-        queryStr += ` WHERE topic = $3`
+        queryStr += ` WHERE topic = $1`
     }
+
+    if (!validSortBys.includes(sort_by)) {
+        return Promise.reject({status: 400, msg: 'sort_by column not found'})
+     } else {
+         queryStr += ` GROUP BY comments.article_id, articles.author, articles.title, articles.article_id, articles.topic,
+     articles.created_at, articles.votes ORDER BY ${sort_by}`
+    }
+
 
     if (!['asc', 'desc'].includes(order.toLowerCase())) {
         return Promise.reject({status: 400, msg: 'invalid order query'})
+    } else {
+        queryStr += ` ${order.toUpperCase()};`
     }
-
-    queryStr += ` GROUP BY comments.article_id, articles.author, articles.title, articles.article_id, articles.topic,
-    articles.created_at, articles.votes ORDER BY $1, $2;`
-
+    
     return db 
     .query(queryStr, queryValues)
     .then((articles) => {
         if (articles.rows.length < 1) {
-            return Promise.reject({status: 400, msg: 'topic does not exist'})
+            return Promise.reject({status: 404, msg: 'topic does not exist'})
         }
         return articles.rows
     })

@@ -352,6 +352,24 @@ describe('/api/articles queries', () => {
         }) 
     });
 
+    test('GET request responds with 200 and all articles sorted by a specific column and order', () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes&order=asc')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+            expect(body.articles).toBeSortedBy('votes', {ascending: true})
+        }) 
+    });
+
     test('GET request responds with 400 if sort_by column is not valid', () => {
         return request(app)
         .get('/api/articles?sort_by=moo')
@@ -361,10 +379,10 @@ describe('/api/articles queries', () => {
         }) 
     });
 
-    test('GET request responds with 400 if topic is not valid', () => {
+    test('GET request responds with 404 if topic does not exist', () => {
         return request(app)
         .get('/api/articles?topic=woof')
-        .expect(400)
+        .expect(404)
         .then(( { body }) => {
             expect(body.msg).toBe('topic does not exist')
         }) 
