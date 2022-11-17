@@ -10,17 +10,25 @@ exports.selectTopics = () => {
     })
 }
 
-exports.selectArticles = () => {
+exports.selectArticles = (topic, sort_by='created_at', order='DESC') => {
+    const queryValues = [sort_by, order]
+    let queryStr = `SELECT articles.author, articles.title,
+    articles.article_id, articles.topic,
+    articles.created_at, articles.votes,
+    COUNT(comments.article_id)::INT AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id`
+
+    if (topic !== undefined) {
+        queryValues.push(topic)
+        queryStr += ` WHERE topic = $3`
+    }
+
+    queryStr += ` GROUP BY comments.article_id, articles.author, articles.title, articles.article_id, articles.topic,
+    articles.created_at, articles.votes ORDER BY $1, $2;`
+
     return db 
-    .query(`SELECT articles.author, articles.title,
-            articles.article_id, articles.topic,
-            articles.created_at, articles.votes,
-            COUNT(comments.article_id)::INT AS comment_count
-            FROM articles
-            LEFT JOIN comments ON comments.article_id = articles.article_id
-            GROUP BY comments.article_id, articles.author, articles.title, articles.article_id, articles.topic,
-            articles.created_at, articles.votes
-            ORDER BY created_at DESC;`)
+    .query(queryStr, queryValues)
 }
 
 

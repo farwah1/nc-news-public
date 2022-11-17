@@ -35,8 +35,8 @@ describe('/api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(( { body }) => {
-            expect(body.length).toBeGreaterThan(0)
-            body.forEach(article => {
+            expect(body.articles.length).toBeGreaterThan(0)
+            body.articles.forEach(article => {
                 expect(article).toMatchObject({
                     author: expect.any(String),
                     title: expect.any(String),
@@ -215,7 +215,7 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 describe('/api/articles/:article_id', () => {
-    test('PATCH request responds with 201 with updated article votes', () => {
+    test('PATCH request responds with 202 with updated article votes', () => {
         const testUpdate = { inc_votes: 1 }
         return request(app)
         .patch('/api/articles/1')
@@ -296,4 +296,69 @@ describe('/api/users', () => {
             })
         })
     });
+});
+
+describe('/api/articles queries', () => {
+    test('GET request responds with 200 and all articles of one topic', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: 'cats',
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+        }) 
+    });
+
+    test('GET request responds with 200 and all articles ordered by asc or desc', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+            expect(body.articles).toBeSorted('created_at',{ascending: true})
+        }) 
+    });
+
+    test('GET request responds with 200 and all articles sorted by a specific column', () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(( { body }) => {
+            body.articles.forEach(article=> {
+                expect(article).toMatchObject({
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                })
+            })
+            expect(body.articles).toBeSortedBy('votes', {descending: true})
+        }) 
+    });
+
+    // test('GET request responds with 400 for invalid query', () => {
+    //     return request(app)
+    //     .get('/api/articles?topicc=cats')
+    //     .expect(400)
+    //     .then(( { body }) => {
+    //         console.log(body)
+    //         expect(body.msg).toBe('invalid input')
+    //     }) 
+    // });
 });
