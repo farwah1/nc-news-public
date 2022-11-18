@@ -88,14 +88,6 @@ exports.getUsers = (req, res, next) => {
         next(error)
     })
 }
-
-
-exports.getApi = (req, res, next) => {
-    readFile('./endpoints.json', 'utf8')
-    .then((result) => {
-        const parsedEndpoints = JSON.parse(result)
-        const endpoints = JSON.stringify(parsedEndpoints)
-        res.send({ endpoints })
         
         
 exports.getCommentByCommentId = (req, res, next) => {
@@ -118,5 +110,14 @@ exports.deleteComment = (req, res, next) => {
     .catch((error) => {
         next(error)
     })
+}
+
+exports.getApi = (req, res, next) => {
+    readFile('./endpoints.json', 'utf8')
+    .then((result) => {
+        const parsedEndpoints = JSON.parse(result)
+        const endpoints = JSON.stringify(parsedEndpoints)
+        res.send({ endpoints })
+    });
 }
 

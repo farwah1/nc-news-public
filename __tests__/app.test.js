@@ -465,7 +465,7 @@ describe('/api/articles queries', () => {
 describe('/api', () => {
     test('GET request responds with 200 and JSON describing all the available endpoints on API', () => {
         return request(app)
-        .get('/api/')
+        .get('/api')
         .expect(200)
         .then(({ body }) => {
             expect(JSON.parse(body.endpoints)).toMatchObject({
