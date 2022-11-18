@@ -103,5 +103,9 @@
 
   "DELETE /api/comments/:comment_id": {
     "description": "serves a 204 status after removing comment"
+  },
+
+  "GET /api/health": {
+    "description": "serves a msg"
   }
 }
