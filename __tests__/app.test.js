@@ -341,14 +341,6 @@ describe('/api/comments/:comment_id', () => {
         return request(app)
         .delete('/api/comments/2')
         .expect(204)
-        .then(() => {
-            return request(app)
-            .get('/api/comments/2')
-            .expect(404)
-            .then(({ body }) => {
-                expect(body.msg).toBe('comment does not exist')
-            })
-        });
     });
 
     test('DELETE request responds with 404 if comment id valid but does not exist', () => {
