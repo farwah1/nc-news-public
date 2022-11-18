@@ -1,6 +1,7 @@
 const db = require('../db/connection.js');
 const { checkUserExists } = require('../db/queryUtils.js')
 
+
 exports.selectTopics = () => {
     return db 
     .query(`SELECT * FROM topics;`)
@@ -128,6 +129,7 @@ exports.selectUsers = () => {
     })
 }
 
+
 exports.selectCommentByCommentId = (comment_id) => {
     return db 
     .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
@@ -150,6 +152,4 @@ exports.removeComment = (comment_id) => {
         }
     })
 }
-
-
 

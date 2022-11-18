@@ -11,7 +11,8 @@ const {
   patchArticle,
   getUsers,
   deleteComment,
-  getCommentByCommentId
+  getCommentByCommentId,
+  getApi
 } = require('./controllers/topics.js');
 
 
@@ -22,9 +23,9 @@ app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 app.post('/api/articles/:article_id/comments', postComment)
 app.patch('/api/articles/:article_id', patchArticle)
 app.get('/api/users', getUsers)
+app.get('/api', getApi)
 app.get('/api/comments/:comment_id', getCommentByCommentId)
 app.delete('/api/comments/:comment_id', deleteComment)
-
 
 
 app.use((err, req, res, next) => {

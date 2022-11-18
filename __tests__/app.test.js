@@ -456,9 +456,29 @@ describe('/api/articles queries', () => {
         return request(app)
         .get('/api/articles?order=meow')
         .expect(400)
-        .then(( { body }) => {
+        .then(({ body }) => {
             expect(body.msg).toBe('invalid order query')
         }) 
-    })
-})
+    });
+});
+
+describe('/api', () => {
+    test('GET request responds with 200 and JSON describing all the available endpoints on API', () => {
+        return request(app)
+        .get('/api/')
+        .expect(200)
+        .then(({ body }) => {
+            expect(JSON.parse(body.endpoints)).toMatchObject({
+                'GET /api': expect.any(Object),
+                'GET /api/topics': expect.any(Object),
+                'GET /api/articles': expect.any(Object),
+                'GET /api/articles/:article_id': expect.any(Object),
+                'GET /api/articles/article_id/comments': expect.any(Object),
+                'POST /api/articles/:article_id/comments': expect.any(Object),
+                'PATCH /api/articles/:article_id': expect.any(Object),
+                'GET /api/users': expect.any(Object)
+              })
+        }) 
+    });
+});
 

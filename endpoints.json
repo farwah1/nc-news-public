@@ -2,6 +2,7 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],
@@ -9,8 +10,9 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -24,6 +26,79 @@
       ]
     }
   },
+
+
+  "GET /api/articles/:article_id": {
+    "description": "serves an object containing an article",
+    "exampleResponse": {
+      "article": {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+    }
+  },
+
+  "GET /api/articles/article_id/comments": {
+    "description": "serves an array of all comments for one article",
+    "exampleResponse": {
+      "comments": [
+        {
+          "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          "votes": 16,
+          "author": "butter_bridge",
+          "article_id": 9,
+          "created_at": 1586179020000
+        }, 
+        {
+          "body": "The owls are not what they seem.",
+          "votes": 20,
+          "author": "icellusedkars",
+          "article_id": 9,
+          "created_at": 1584205320000
+        }
+      ]
+    }
+  },
+
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves object of the comment you have added to the table",
+    "exampleResponse": {
+      "comment": {
+        "body": "The owls are not what they seem.",
+        "votes": 20,
+        "author": "icellusedkars",
+        "article_id": 9,
+        "created_at": 1584205320000
+      }
+    }
+  },
+
+  "PATCH /api/articles/:article_id": {
+    "description": "serves object with the comment you have updated",
+    "exampleResponse": {
+      "comment": {
+        "body": "The owls are not what they seem.",
+        "votes": 20,
+        "author": "icellusedkars",
+        "article_id": 9,
+        "created_at": 1584205320000
+      }
+    }
+  },
+
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleResponse": {
+      "users" :
+      [{
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }]
+    }
 
   "DELETE /api/comments/:comment_id": {
     "description": "serves a 204 status after removing comment"

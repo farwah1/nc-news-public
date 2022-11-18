@@ -1,3 +1,5 @@
+const { readFile } = require('fs/promises')
+
 const { 
     selectTopics,
     selectArticles,
@@ -87,6 +89,15 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
+
+exports.getApi = (req, res, next) => {
+    readFile('./endpoints.json', 'utf8')
+    .then((result) => {
+        const parsedEndpoints = JSON.parse(result)
+        const endpoints = JSON.stringify(parsedEndpoints)
+        res.send({ endpoints })
+        
+        
 exports.getCommentByCommentId = (req, res, next) => {
     const { comment_id } = req.params
     selectCommentByCommentId(comment_id)
