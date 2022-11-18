@@ -87,14 +87,15 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
-exports.getApi = async (req, res, next) => {
-    try {
-        const result = await readFile('./endpoints.json', 'utf8')
+exports.getApi = (req, res, next) => {
+    readFile('./endpoints.json', 'utf8')
+    .then((result) => {
         const parsedEndpoints = JSON.parse(result)
         const endpoints = JSON.stringify(parsedEndpoints)
         res.send({ endpoints })
-    } catch (error) {
+    })
+    .catch((error) => {
         next(error)
-    }
+    })
 }
 
