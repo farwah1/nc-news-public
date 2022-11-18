@@ -15,7 +15,8 @@ const {
   getApi
 } = require('./controllers/topics.js');
 
-
+app.get('/api/health', (req, res) => {
+  res.status(200).send({ msg: 'server up and running!'})});
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleByArticleId);
