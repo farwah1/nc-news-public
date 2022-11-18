@@ -1,3 +1,5 @@
+const { readFile } = require('fs/promises')
+
 const { 
     selectTopics,
     selectArticles,
@@ -5,8 +7,7 @@ const {
     selectCommentsByArticleId,
     addComment,
     updateArticle,
-    selectUsers,
-    selectApi
+    selectUsers
  } = require('../models/topics.js')
 
 
@@ -86,11 +87,10 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
-exports.getApi = (req, res, next) => {
-    selectApi()
-    .then((endpoints) => {
-        res.send({ endpoints })
-    })
-    
+exports.getApi = async (req, res, next) => {
+    const result = await readFile('./endpoints.json', 'utf8')
+    const parsedEndpoints = JSON.parse(result)
+    const endpoints = JSON.stringify(parsedEndpoints)
+    res.send({ endpoints })
 }
 
