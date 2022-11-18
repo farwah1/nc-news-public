@@ -2,7 +2,7 @@
 
 ## Hosted API
 
-### To use visit: https://ncnews.cyclic.app
+### To use visit: https://ncnews.cyclic.app/api
 
 
 ## Summary 
