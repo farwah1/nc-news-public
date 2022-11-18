@@ -23,5 +23,9 @@
         }
       ]
     }
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "serves a 204 status after removing comment"
   }
 }
