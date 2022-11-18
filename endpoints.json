@@ -27,6 +27,7 @@
     }
   },
 
+
   "GET /api/articles/:article_id": {
     "description": "serves an object containing an article",
     "exampleResponse": {
@@ -98,5 +99,8 @@
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       }]
     }
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "serves a 204 status after removing comment"
   }
 }

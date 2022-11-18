@@ -7,7 +7,9 @@ const {
     selectCommentsByArticleId,
     addComment,
     updateArticle,
-    selectUsers
+    selectUsers,
+    removeComment,
+    selectCommentByCommentId
  } = require('../models/topics.js')
 
 
@@ -87,12 +89,31 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
+
 exports.getApi = (req, res, next) => {
     readFile('./endpoints.json', 'utf8')
     .then((result) => {
         const parsedEndpoints = JSON.parse(result)
         const endpoints = JSON.stringify(parsedEndpoints)
         res.send({ endpoints })
+        
+        
+exports.getCommentByCommentId = (req, res, next) => {
+    const { comment_id } = req.params
+    selectCommentByCommentId(comment_id)
+    .then((comment) => {
+        res.send({ comment })
+    })
+    .catch((error) => {
+        next(error)
+    })
+}
+
+exports.deleteComment = (req, res, next) => {
+    const { comment_id } = req.params
+    removeComment(comment_id)
+    .then(() => {
+        res.sendStatus(204)
     })
     .catch((error) => {
         next(error)

@@ -129,3 +129,27 @@ exports.selectUsers = () => {
     })
 }
 
+
+exports.selectCommentByCommentId = (comment_id) => {
+    return db 
+    .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
+    .then((comment) => {
+        if (comment.rows.length < 1) {
+            return Promise.reject({status: 404, msg: 'comment does not exist'});
+        } else {
+            return comment.rows[0]
+        }
+    })
+}
+
+
+exports.removeComment = (comment_id) => {
+    return db 
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING*;`, [comment_id])
+    .then((deletedComment) => {
+        if (deletedComment.rows.length < 1) {
+            return Promise.reject({status: 404, msg: 'comment does not exist'});
+        }
+    })
+}
+
